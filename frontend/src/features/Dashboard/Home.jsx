@@ -1,6 +1,8 @@
 import { useState } from "react";
-
+import {Link }from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 const Home = () => {
+  const navigate = useNavigate();
   const [isOnline, setIsOnline] = useState(false);
   const [activeDelivery, setActiveDelivery] = useState(null);
 
@@ -21,20 +23,27 @@ const Home = () => {
     },
   ];
 
-  const handleAccept = (delivery) => {
-    setActiveDelivery(delivery);
-  };
+  // const handleAccept = (delivery) => {
+  //   setActiveDelivery(delivery);
+  // };
 
   return (
     <>
       <nav className="bg-white/10 backdrop-blur m-2 p-2 flex justify-between items-center font-semibold">
-        <span className="text-lg">BillMaker</span>
+        <Link to={"/"} className="text-lg">BillMaker</Link>
+
+        <div className="flex gap-6 text-sm">
+          <button onClick={navigate("/consignment")} className="hover:text-orange-400 transition">
+            Consignment
+          </button>
+        </div>
 
         <div className="flex gap-6 text-sm">
           <button className="hover:text-orange-400 transition">
             Past Orders
           </button>
         </div>
+        
 
         <div>
           <button className="bg-orange-500 px-4 py-1 rounded-lg text-sm">
@@ -78,7 +87,7 @@ const Home = () => {
         </div>
 
         {/* ACTIVE DELIVERY */}
-        {isOnline
+        {/* {isOnline
           ? activeDelivery && (
               <div className="bg-orange-500/20 border border-orange-400 p-4 rounded-xl mb-4">
                 <h2 className="text-lg font-semibold mb-2">
@@ -101,10 +110,10 @@ const Home = () => {
                 </div>
               </div>
             )
-          : ""}
+          : ""} */}
 
         {/* DELIVERY LIST */}
-        <div>
+        {/* <div>
           <h2 className="text-lg font-semibold mb-2">
             📦 Available Deliveries
           </h2>
@@ -136,15 +145,15 @@ const Home = () => {
                 </button>
               </div>
             ))}
-        </div>
+        </div> */}
 
         {/* BOTTOM NAV */}
-        <div className="fixed bottom-0 left-0 w-full bg-[#020617] border-t border-gray-800 flex justify-around py-3">
+        {/* <div className="fixed bottom-0 left-0 w-full bg-[#020617] border-t border-gray-800 flex justify-around py-3">
           <button className="text-orange-400">🏠</button>
           <button>📦</button>
           <button>💰</button>
           <button>👤</button>
-        </div>
+        </div> */}
       </div>
     </>
   );
