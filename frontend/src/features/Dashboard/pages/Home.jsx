@@ -6,34 +6,13 @@ const Home = () => {
   const [isOnline, setIsOnline] = useState(false);
   const [activeDelivery, setActiveDelivery] = useState(null);
 
-  const deliveries = [
-    {
-      id: 1,
-      pickup: "MG Road",
-      drop: "Whitefield",
-      distance: "6.2 km",
-      amount: 120,
-    },
-    {
-      id: 2,
-      pickup: "BTM",
-      drop: "HSR",
-      distance: "4 km",
-      amount: 90,
-    },
-  ];
-
-  // const handleAccept = (delivery) => {
-  //   setActiveDelivery(delivery);
-  // };
-
   return (
     <>
       <nav className="bg-white/10 backdrop-blur m-2 p-2 flex justify-between items-center font-semibold">
         <Link to={"/"} className="text-lg">BillMaker</Link>
 
         <div className="flex gap-6 text-sm">
-          <button onClick={navigate("/consignment")} className="hover:text-orange-400 transition">
+          <button onClick={() => navigate("/consignment")} className="hover:text-orange-400 transition">
             Consignment
           </button>
         </div>
@@ -46,7 +25,9 @@ const Home = () => {
         
 
         <div>
-          <button className="bg-orange-500 px-4 py-1 rounded-lg text-sm">
+          <button onClick={()=>{
+            navigate("/login")
+          }} className="bg-orange-500 px-4 py-1 rounded-lg text-sm">
             Logout
           </button>
         </div>

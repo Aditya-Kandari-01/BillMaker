@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import generatePdf from "../utils/pdfGenerator";
 const steps = ["Pickup", "Delivery", "Package", "Pricing", "Review"];
 const data = [
   {
@@ -10,7 +10,7 @@ const data = [
     receiverPhone: "9123456780",
     deliveryAddress: "Mumbai",
     weight: "",
-    type: ""
+    type: "",
   },
   {
     sender: "Neha",
@@ -20,7 +20,7 @@ const data = [
     receiverPhone: "9012345678",
     deliveryAddress: "Pune",
     weight: "",
-    type: ""
+    type: "",
   },
   {
     sender: "Ravi",
@@ -30,7 +30,7 @@ const data = [
     receiverPhone: "9345678901",
     deliveryAddress: "Chennai",
     weight: "",
-    type: ""
+    type: "",
   },
   {
     sender: "Priya",
@@ -40,7 +40,7 @@ const data = [
     receiverPhone: "9765432109",
     deliveryAddress: "Ahmedabad",
     weight: "",
-    type: ""
+    type: "",
   },
   {
     sender: "Vikram",
@@ -50,7 +50,7 @@ const data = [
     receiverPhone: "9456781234",
     deliveryAddress: "Lucknow",
     weight: "",
-    type: ""
+    type: "",
   },
   {
     sender: "Sneha",
@@ -60,7 +60,7 @@ const data = [
     receiverPhone: "9234567812",
     deliveryAddress: "Indore",
     weight: "",
-    type: ""
+    type: "",
   },
   {
     sender: "Arjun",
@@ -70,7 +70,7 @@ const data = [
     receiverPhone: "9345612789",
     deliveryAddress: "Surat",
     weight: "",
-    type: ""
+    type: "",
   },
   {
     sender: "Pooja",
@@ -80,7 +80,7 @@ const data = [
     receiverPhone: "9123987654",
     deliveryAddress: "Amritsar",
     weight: "",
-    type: ""
+    type: "",
   },
   {
     sender: "Karan",
@@ -90,7 +90,7 @@ const data = [
     receiverPhone: "9988123456",
     deliveryAddress: "Ranchi",
     weight: "",
-    type: ""
+    type: "",
   },
   {
     sender: "Meera",
@@ -100,10 +100,20 @@ const data = [
     receiverPhone: "9876123450",
     deliveryAddress: "Mangalore",
     weight: "",
-    type: ""
+    type: "",
   },
 ];
-
+const initialForm = {
+  sender: "",
+  senderPhone: "",
+  pickupAddress: "",
+  receiver: "",
+  receiverPhone: "",
+  deliveryAddress: "",
+  weight: "",
+  type: "Document",
+  price: 0,
+};
 export default function Order() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({
@@ -117,13 +127,31 @@ export default function Order() {
     type: "Document",
     price: 0,
   });
-  const submitHandler = (event) => {
-    event.preventDefault();
+  const submitHandler = () => {
+    const consignmentData = {
+      sender: form.sender,
+      pickup: form.pickupAddress,
+      receiver: form.receiver,
+      delivery: form.deliveryAddress,
+      amount: (form.weight || 0) * (form.price || 0),
+    };
+    generatePdf(consignmentData);
+    setForm(initialForm);
+    setStep(0);
   };
   const updateParameter = (event) => {
     const { name, value } = event.target;
-    if (name === "sender"){
-      const found = data.find((user) => user.sender.toLowerCase() === value.toLowerCase());
+    if (name === "price" || name === "weight") {
+      setForm((prevState) => ({
+        ...prevState,
+        [name]: value === "" ? "" : Number(value), //convert to number
+      }));
+      return;
+    }
+    if (name === "sender") {
+      const found = data.find(
+        (user) => user.sender.toLowerCase() === value.toLowerCase(),
+      );
 
       setForm((prevState) => ({
         ...prevState,
@@ -135,13 +163,13 @@ export default function Order() {
           receiver: found.receiver,
           receiverPhone: found.receiverPhone,
           deliveryAddress: found.deliveryAddress,
-        })
+        }),
       }));
-    }else{
-      setForm((prevState)=>({
+    } else {
+      setForm((prevState) => ({
         ...prevState,
-        [name]:value
-      }))
+        [name]: value,
+      }));
     }
   };
 
@@ -238,12 +266,14 @@ export default function Order() {
 
         {step === 2 && (
           <div className="space-y-4">
-            <select name="type" className="login-input !pl-4">
+            <select name="type" value={form.type}
+  onChange={updateParameter} className="login-input !pl-4">
               <option>Standard</option>
               <option>Parcel</option>
               <option>Fragile</option>
             </select>
             <input
+              type="number"
               onChange={updateParameter}
               value={form.weight || ""}
               name="weight"
@@ -255,8 +285,14 @@ export default function Order() {
 
         {step === 3 && (
           <div className="space-y-4">
-            <input onChange={updateParameter} name="price" className="login-input !pl-4" placeholder="Enter Amount (per kg)">
-            </input>
+            <input
+              type="number"
+              onChange={updateParameter}
+              value={form.price || ""}
+              name="price"
+              className="login-input !pl-4"
+              placeholder="Enter Amount (per kg)"
+            ></input>
           </div>
         )}
 
@@ -284,7 +320,7 @@ export default function Order() {
         <div className="flex justify-between mt-8">
           <button
             onClick={() => {
-              setStep(step - 1);
+              setStep((prev) => Math.max(prev - 1, 0));
             }}
             disabled={step === 0}
             className="px-6 py-4 bg-white/10 rounded text-sm disabled:opacity-30"
@@ -302,7 +338,12 @@ export default function Order() {
               Next
             </button>
           ) : (
-            <button className="bg-linear-to-br from-[#ff8c32] to-[#ff5a1f] rounded w-auto px-6 py-4">
+            <button
+              onClick={() => {
+                submitHandler();
+              }}
+              className="bg-linear-to-br from-[#ff8c32] to-[#ff5a1f] rounded w-auto px-6 py-4"
+            >
               Confirm
             </button>
           )}

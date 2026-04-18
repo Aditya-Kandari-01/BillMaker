@@ -1,0 +1,3 @@
+const postalCode = async(pincode) =>{
+    
+}
