@@ -1,6 +1,6 @@
 import { useState } from "react";
-import {Link }from "react-router-dom"
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 const Home = () => {
   const navigate = useNavigate();
   const [isOnline, setIsOnline] = useState(false);
@@ -8,133 +8,133 @@ const Home = () => {
 
   return (
     <>
-      <nav className="bg-white/10 backdrop-blur m-2 p-2 flex justify-between items-center font-semibold">
-        <Link to={"/"} className="text-lg">BillMaker</Link>
 
-        <div className="flex gap-6 text-sm">
-          <button onClick={() => navigate("/consignment")} className="hover:text-orange-400 transition">
-            Consignment
-          </button>
-        </div>
+      <div className="hx-root">
+        <div className="hx-orb1" />
+        <div className="hx-orb2" />
 
-        <div className="flex gap-6 text-sm">
-          <button className="hover:text-orange-400 transition">
-            Past Orders
-          </button>
-        </div>
-        
+        {/* ── NAV ── */}
+        <nav className="hx-nav">
+          <Link to="/" className="hx-brand">
+            <div className="hx-brand-icon">📦</div>
+            <div className="hx-brand-name">Ship<span>X</span></div>
+          </Link>
 
-        <div>
-          <button onClick={()=>{
-            navigate("/login")
-          }} className="bg-orange-500 px-4 py-1 rounded-lg text-sm">
+          <div className="hx-nav-links">
+            <button className="hx-nav-btn" onClick={() => navigate("/consignment")}>
+              Consignment
+            </button>
+            <button className="hx-nav-btn">
+              Past Orders
+            </button>
+          </div>
+
+          <button className="hx-logout-btn" onClick={() => navigate("/login")}>
             Logout
           </button>
-        </div>
-      </nav>
+        </nav>
 
-      <div className="min-h-screen bg-[#0f172a] text-white p-4 pb-20">
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h1 className="text-xl font-semibold">Hi, Aditya 👋</h1>
-            <p className="text-sm text-gray-400">Whitefield, Bangalore</p>
-          </div>
+        {/* ── BODY ── */}
+        <div className="hx-body">
 
-          <button
-            onClick={() => setIsOnline(!isOnline)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-              isOnline ? "bg-green-500" : "bg-gray-600"
-            }`}
-          >
-            {isOnline ? "Online" : "Offline"}
-          </button>
-        </div>
-
-        {/* STATS */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
-          <div className="bg-white/10 backdrop-blur p-3 rounded-xl text-center">
-            <p className="text-sm text-gray-300">Orders</p>
-            <p className="text-lg font-semibold">5</p>
-          </div>
-          <div className="bg-white/10 backdrop-blur p-3 rounded-xl text-center">
-            <p className="text-sm text-gray-300">Earnings</p>
-            <p className="text-lg font-semibold">₹850</p>
-          </div>
-          <div className="bg-white/10 backdrop-blur p-3 rounded-xl text-center">
-            <p className="text-sm text-gray-300">Rating</p>
-            <p className="text-lg font-semibold">4.8 ⭐</p>
-          </div>
-        </div>
-
-        {/* ACTIVE DELIVERY */}
-        {/* {isOnline
-          ? activeDelivery && (
-              <div className="bg-orange-500/20 border border-orange-400 p-4 rounded-xl mb-4">
-                <h2 className="text-lg font-semibold mb-2">
-                  🚚 Active Delivery
-                </h2>
-                <p>
-                  {activeDelivery.pickup} → {activeDelivery.drop}
-                </p>
-                <p className="text-sm text-gray-300">
-                  {activeDelivery.distance} • ₹{activeDelivery.amount}
-                </p>
-
-                <div className="flex gap-2 mt-3">
-                  <button className="bg-orange-500 px-3 py-1 rounded-lg">
-                    Start Pickup
-                  </button>
-                  <button className="bg-green-500 px-3 py-1 rounded-lg">
-                    Complete
-                  </button>
-                </div>
+          {/* Hero row */}
+          <div className="hx-hero">
+            <div>
+              <div className="hx-greeting-sub">Dashboard</div>
+              <div className="hx-greeting-name">Hi, Aditya 👋</div>
+              <div className="hx-greeting-loc">
+                <span>📍</span> Whitefield, Bangalore
               </div>
-            )
-          : ""} */}
+            </div>
 
-        {/* DELIVERY LIST */}
-        {/* <div>
-          <h2 className="text-lg font-semibold mb-2">
-            📦 Available Deliveries
-          </h2>
+            <button
+              className={`hx-online-toggle ${isOnline ? "online" : "offline"}`}
+              onClick={() => setIsOnline(!isOnline)}
+            >
+              <span className="hx-toggle-dot" />
+              {isOnline ? "Online" : "Offline"}
+            </button>
+          </div>
 
+          {/* Stats */}
+          <div className="hx-stats">
+            <div className="hx-stat">
+              <div className="hx-stat-label">Orders</div>
+              <div className="hx-stat-value">5</div>
+            </div>
+            <div className="hx-stat">
+              <div className="hx-stat-label">Earnings</div>
+              <div className="hx-stat-value accent">₹850</div>
+            </div>
+            <div className="hx-stat">
+              <div className="hx-stat-label">Rating</div>
+              <div className="hx-stat-value green">4.8★</div>
+            </div>
+          </div>
+
+          {/* Status banner */}
           {!isOnline && (
-            <p className="text-gray-400 text-sm">Go online to see deliveries</p>
+            <div className="hx-status-banner">
+              <div className="hx-status-icon">🚚</div>
+              <div className="hx-status-text">
+                <div className="hx-status-title">You're currently offline</div>
+                <div className="hx-status-sub">Go online to receive new delivery requests</div>
+              </div>
+              <button className="hx-go-online-btn" onClick={() => setIsOnline(true)}>
+                Go Online
+              </button>
+            </div>
           )}
 
-          {isOnline &&
-            deliveries.map((d) => (
-              <div
-                key={d.id}
-                className="bg-white/10 backdrop-blur p-4 rounded-xl mb-3 flex justify-between items-center"
-              >
-                <div>
-                  <p className="font-medium">
-                    {d.pickup} → {d.drop}
-                  </p>
-                  <p className="text-sm text-gray-400">
-                    {d.distance} • ₹{d.amount}
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => handleAccept(d)}
-                  className="bg-orange-500 px-3 py-2 rounded-lg text-sm"
-                >
-                  Accept
-                </button>
+          {isOnline && (
+            <div className="hx-status-banner" style={{ borderColor: "rgba(62,207,142,0.2)", background: "rgba(62,207,142,0.04)" }}>
+              <div className="hx-status-icon" style={{ background: "rgba(62,207,142,0.1)" }}>✅</div>
+              <div className="hx-status-text">
+                <div className="hx-status-title" style={{ color: "var(--green)" }}>You're online</div>
+                <div className="hx-status-sub">Waiting for new delivery requests…</div>
               </div>
-            ))}
-        </div> */}
+            </div>
+          )}
 
-        {/* BOTTOM NAV */}
-        {/* <div className="fixed bottom-0 left-0 w-full bg-[#020617] border-t border-gray-800 flex justify-around py-3">
-          <button className="text-orange-400">🏠</button>
-          <button>📦</button>
-          <button>💰</button>
-          <button>👤</button>
-        </div> */}
+          {/* Quick actions */}
+          <div>
+            <div className="hx-section-label">Quick Actions</div>
+            <div className="hx-actions">
+              <div className="hx-action-card" onClick={() => navigate("/consignment")}>
+                <div className="hx-action-icon orange">📦</div>
+                <div>
+                  <div className="hx-action-title">New Consignment</div>
+                  <div className="hx-action-sub">Create a shipment order</div>
+                </div>
+              </div>
+
+              <div className="hx-action-card">
+                <div className="hx-action-icon blue">📋</div>
+                <div>
+                  <div className="hx-action-title">Past Orders</div>
+                  <div className="hx-action-sub">View order history</div>
+                </div>
+              </div>
+
+              <div className="hx-action-card">
+                <div className="hx-action-icon green">💰</div>
+                <div>
+                  <div className="hx-action-title">Earnings</div>
+                  <div className="hx-action-sub">Track your income</div>
+                </div>
+              </div>
+
+              <div className="hx-action-card">
+                <div className="hx-action-icon pink">👤</div>
+                <div>
+                  <div className="hx-action-title">Profile</div>
+                  <div className="hx-action-sub">Manage your account</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </>
   );
