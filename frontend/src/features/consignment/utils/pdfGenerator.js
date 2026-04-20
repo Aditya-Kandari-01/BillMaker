@@ -31,6 +31,7 @@ const generatePdf = (data) => {
 
   // ─── Package ───
   doc.text("Package Details:", 20, 175);
+  doc.text(`Network: ${data.receiver.network}`, 20, 180);
   doc.text(`Type: ${data.package.type}`, 20, 185);
   doc.text(`Weight: ${data.package.weight} kg`, 20, 192);
   doc.text(`Rate: Rs. ${data.package.pricePerKg} / kg`, 20, 199);
