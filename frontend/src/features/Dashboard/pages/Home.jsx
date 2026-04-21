@@ -24,8 +24,11 @@ const Home = () => {
             <button className="hx-nav-btn" onClick={() => navigate("/consignment")}>
               Consignment
             </button>
-            <button className="hx-nav-btn">
+            <button className="hx-nav-btn"  onClick={() => navigate("/pastOrders")}>
               Past Orders
+            </button>
+            <button className="hx-nav-btn"  onClick={() => navigate("/customer")}>
+              New Customer
             </button>
           </div>
 

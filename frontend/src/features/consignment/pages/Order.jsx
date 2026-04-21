@@ -2,160 +2,181 @@ import { useState } from "react";
 import generatePdf from "../utils/pdfGenerator";
 import { Link } from "react-router-dom";
 import PastOrders from "./PastOrders";
+import Field from "../components/Fields";
+import { useEffect } from "react";
 
 const data = [
   {
     sender: "Aditya",
     senderPhone: "9876543210",
     pickupAddress: "Bangalore",
-    receiver: "Rahul",
-    receiverPhone: "9123456780",
-    deliveryAddress: "Mumbai",
-    weight: "",
+    weight: null,
     type: "Document",
     awb: "",
     city: "Bangalore",
     state: "Karnataka",
     pincode: "560001",
     price: 0,
+    height: null,
+    breadth: null,
+    length: null,
+    panNumber: "ABCDE1234F",
+    gstNumber: "29ABCDE1234F1Z5",
   },
   {
     sender: "Neha",
     senderPhone: "9988776655",
     pickupAddress: "Delhi",
-    receiver: "Amit",
-    receiverPhone: "9012345678",
-    deliveryAddress: "Pune",
-    weight: "",
+    weight: null,
     type: "Document",
     awb: "",
     city: "Delhi",
     state: "Delhi",
     pincode: "110001",
     price: 0,
+    height: null,
+    breadth: null,
+    length: null,
+    panNumber: "PQRSX5678L",
+    gstNumber: "07PQRSX5678L1Z2",
   },
   {
     sender: "Ravi",
     senderPhone: "9090909090",
     pickupAddress: "Hyderabad",
-    receiver: "Kiran",
-    receiverPhone: "9345678901",
-    deliveryAddress: "Chennai",
-    weight: "",
+    weight: null,
     type: "Document",
     awb: "",
     city: "Hyderabad",
     state: "Telangana",
     pincode: "500001",
     price: 0,
+    height: null,
+    breadth: null,
+    length: null,
+    panNumber: "LMNOP4321K",
+    gstNumber: "36LMNOP4321K1Z7",
   },
   {
     sender: "Priya",
     senderPhone: "8888888888",
     pickupAddress: "Kolkata",
-    receiver: "Suresh",
-    receiverPhone: "9765432109",
-    deliveryAddress: "Ahmedabad",
-    weight: "",
+    weight: null,
     type: "Document",
     awb: "",
     city: "Kolkata",
     state: "West Bengal",
     pincode: "700001",
     price: 0,
+    height: null,
+    breadth: null,
+    length: null,
+    panNumber: "ZXCVB6789Q",
+    gstNumber: "19ZXCVB6789Q1Z3",
   },
   {
     sender: "Vikram",
     senderPhone: "9777777777",
     pickupAddress: "Jaipur",
-    receiver: "Anjali",
-    receiverPhone: "9456781234",
-    deliveryAddress: "Lucknow",
-    weight: "",
+    weight: null,
     type: "Document",
     awb: "",
     city: "Jaipur",
     state: "Rajasthan",
     pincode: "302001",
     price: 0,
+    height: null,
+    breadth: null,
+    length: null,
+    panNumber: "ASDFG1122H",
+    gstNumber: "08ASDFG1122H1Z9",
   },
   {
     sender: "Sneha",
     senderPhone: "9666666666",
     pickupAddress: "Bhopal",
-    receiver: "Manish",
-    receiverPhone: "9234567812",
-    deliveryAddress: "Indore",
-    weight: "",
+    weight: null,
     type: "Document",
     awb: "",
     city: "Bhopal",
     state: "Madhya Pradesh",
     pincode: "462001",
     price: 0,
+    height: null,
+    breadth: null,
+    length: null,
+    panNumber: "GHJKL3344P",
+    gstNumber: "23GHJKL3344P1Z1",
   },
   {
     sender: "Arjun",
     senderPhone: "9555555555",
     pickupAddress: "Nagpur",
-    receiver: "Deepak",
-    receiverPhone: "9345612789",
-    deliveryAddress: "Surat",
-    weight: "",
+    weight: null,
     type: "Document",
     awb: "",
     city: "Nagpur",
     state: "Maharashtra",
     pincode: "440001",
     price: 0,
+    height: null,
+    breadth: null,
+    length: null,
+    panNumber: "QWERT5566T",
+    gstNumber: "27QWERT5566T1Z4",
   },
   {
     sender: "Pooja",
     senderPhone: "9444444444",
     pickupAddress: "Chandigarh",
-    receiver: "Rohit",
-    receiverPhone: "9123987654",
-    deliveryAddress: "Amritsar",
-    weight: "",
+    weight: null,
     type: "Document",
     awb: "",
     city: "Chandigarh",
     state: "Chandigarh",
     pincode: "160001",
     price: 0,
+    height: null,
+    breadth: null,
+    length: null,
+    panNumber: "YUIOP7788M",
+    gstNumber: "04YUIOP7788M1Z6",
   },
   {
     sender: "Karan",
     senderPhone: "9333333333",
     pickupAddress: "Patna",
-    receiver: "Nikhil",
-    receiverPhone: "9988123456",
-    deliveryAddress: "Ranchi",
-    weight: "",
+    weight: null,
     type: "Document",
     awb: "",
     city: "Patna",
     state: "Bihar",
     pincode: "800001",
     price: 0,
+    height: null,
+    breadth: null,
+    length: null,
+    panNumber: "BNMJK9900R",
+    gstNumber: "10BNMJK9900R1Z8",
   },
   {
     sender: "Meera",
     senderPhone: "9222222222",
     pickupAddress: "Goa",
-    receiver: "Varun",
-    receiverPhone: "9876123450",
-    deliveryAddress: "Mangalore",
-    weight: "",
+    weight: null,
     type: "Document",
     awb: "",
     city: "Panaji",
     state: "Goa",
     pincode: "403001",
     price: 0,
+    height: null,
+    breadth: null,
+    length: null,
+    panNumber: "PLMOK2233S",
+    gstNumber: "30PLMOK2233S1Z0",
   },
 ];
-
 const initialForm = {
   sender: "",
   senderPhone: "",
@@ -165,64 +186,108 @@ const initialForm = {
   deliveryAddress: "",
   weight: "",
   type: "Document",
-  sawbno: "",
-  rawbno: "",
   scity: "",
   sstate: "",
   spincode: "",
   rpincode: "",
   rcity: "",
   rstate: "",
+  awbno: "",
   network: "",
+  gstNumber: "",
+  panNumber: "",
+  height: null,
+  breadth: null,
+  length: null,
   date: "",
   price: 0,
 };
-
-function Field({ label, children }) {
-  return (
-    <div className="sx-field">
-      <label className="sx-label">{label}</label>
-      {children}
-    </div>
-  );
-}
 
 export default function Order() {
   const today = new Date().toISOString().split("T")[0];
   const [active, setActive] = useState("order");
   const [form, setForm] = useState({ ...initialForm });
   const [date, setDate] = useState(today);
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [customers,setCustomers] = useState([])
   const [orders, setOrders] = useState(
     () => JSON.parse(localStorage.getItem("consignments")) || [],
   );
 
-  const submitHandler = () => {
-    const consignmentData = {
-      sender: {
-        name: form.sender,
-        phone: form.senderPhone,
-        address: form.pickupAddress,
-        awb: form.sawbno,
-        city: form.scity,
-        state: form.sstate,
-        pincode: form.spincode,
+const submitHandler = () => {
+  const volumetricWeight =
+    form.length && form.breadth && form.height
+      ? (Number(form.length) * Number(form.breadth) * Number(form.height)) / 5000
+      : 0;
+
+  const consignmentData = {
+    company: {
+      name: "R. S COURIER",
+      address: "M.J Market Kicha Road Near Axis Bank, Sitarganj",
+      city: "Sitarganj",
+      state: "Uttarakhand",
+      pincode: "262405",
+      gstNo: form.gstNumber || "—",
+      panNo: form.panNumber || "—",
+      email: "sanmukhsupplychain@gmail.com",
+      contact: "9810064478",
+    },
+
+    invoice: {
+      number: form.invoiceNo || "1977",
+      date: form.date || new Date().toLocaleDateString("en-GB"),
+      stateCode: form.stateCode || "05",
+      placeOfSupply: form.placeOfSupply || form.rcity || "—",
+      hsnSac: "996812",
+    },
+
+    billTo: {
+      name: form.sender || "—",
+      address: form.pickupAddress || "—",
+      gstNo: form.gstNumber || "—",
+      panNo: form.panNumber || "—",
+    },
+
+    shipTo: {
+      name: form.receiver || "—",
+      address: form.deliveryAddress || "—",
+      placeOfSupply: form.rcity || "—",
+      stateCode: form.stateCode || "—",
+    },
+
+    shipments: [
+      {
+        sno: 1,
+        awb: form.awb || "—",
+        date: form.date || new Date().toLocaleDateString("en-GB"),
+        destination: form.rcity || "—",
+        pcs: form.pcs || 1,
+        weight: form.weight || volumetricWeight || 0,
+        amount: form.price || 0,
+        network: form.network || "—",
+        mode: form.type || "—",
+        origin: form.scity || "—",
+        consignee: form.receiver || "—",
       },
-      receiver: {
-        name: form.receiver,
-        phone: form.receiverPhone,
-        address: form.deliveryAddress,
-        awb: form.rawbno,
-        city: form.rcity,
-        state: form.rstate,
-        pincode: form.rpincode,
-      },
-      package: { type: form.type, weight: form.weight, pricePerKg: form.price },
-      amount: (form.weight || 0) * (form.price || 0),
-      date: date,
-    };
-    generatePdf(consignmentData);
+    ],
+
+    totals: {
+      totalShipments: 1,
+      totalAwb: 1,
+      subtotal: Number(form.price || 0),
+      grandTotal: Number(form.price || 0),
+    },
+
+    charges: {
+      fuelSurcharge: 0,
+      otherCharges: 0,
+    },
+
+    amountInWords: `INR ${Number(form.price || 0)} ONLY`,
+    fileName: `invoice_${form.awb || "receipt"}.pdf`,
   };
+
+  generatePdf(consignmentData);
+};
 
   const addOrder = () => {
     const consignmentData = {
@@ -230,7 +295,6 @@ export default function Order() {
         name: form.sender,
         phone: form.senderPhone,
         address: form.pickupAddress,
-        awb: form.sawbno,
         city: form.scity,
         state: form.sstate,
         pincode: form.spincode,
@@ -239,13 +303,16 @@ export default function Order() {
         name: form.receiver,
         phone: form.receiverPhone,
         address: form.deliveryAddress,
-        awb: form.rawbno,
         city: form.rcity,
         state: form.rstate,
         pincode: form.rpincode,
       },
       package: { type: form.type, weight: form.weight, pricePerKg: form.price },
-      amount: (form.weight || 0) * (form.price || 0),
+      amount:
+        form.length && form.breadth && form.height
+          ? (form.length * form.breadth * form.height) / 5000
+          : 0,
+      awbno: form.awb,
       date: date,
     };
 
@@ -254,25 +321,9 @@ export default function Order() {
 
     localStorage.setItem("consignments", JSON.stringify(updatedData));
     setOrders(updatedData);
-    window.alert("Data added successfully")
+    window.alert("Data added successfully");
   };
 
-  // ── Click a past-order row → fill receiver fields ──
-  const handleRowClick = (item, idx) => {
-    setSelectedRow(idx);
-    setForm((prev) => ({
-      ...prev,
-      receiver: item.receiver.name || "",
-      receiverPhone: item.receiver.phone || "",
-      deliveryAddress: item.receiver.address || "",
-      rawbno: item.receiver.awb || "",
-      rcity: item.receiver.city || "",
-      rstate: item.receiver.state || "",
-      rpincode: item.receiver.pincode || "",
-    }));
-    // Scroll / switch to order tab so user can see the filled fields
-    setActive("order");
-  };
 
   const updateParameter = async (event) => {
     const { name, value } = event.target;
@@ -298,9 +349,12 @@ export default function Order() {
           scity: found.city,
           sstate: found.state,
           spincode: found.pincode,
+          gstNumber: found.gstNumber,
+          panNumber: found.panNumber,
           network: found.network,
         }),
       }));
+      console.log(found)
       return;
     }
 
@@ -344,8 +398,27 @@ export default function Order() {
       }
     }
   };
+  useEffect(() => {
+  const fetchCustomers = async () => {
+    try {
+      const res = await fetch("http://localhost:10000/data/customer");
+      const result = await res.json();
 
-  const totalAmount = (form.weight || 0) * (form.price || 0);
+      if (res.ok) {
+        setCustomers(result.data || []);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  fetchCustomers();
+}, []);
+
+  const totalAmount =
+    form.length && form.breadth && form.height
+      ? (form.length * form.breadth * form.height) / 5000
+      : 0;
 
   return (
     <>
@@ -399,8 +472,8 @@ export default function Order() {
                       value={form.sender || ""}
                     />
                     <datalist id="senderNames">
-                      {data.map((u, i) => (
-                        <option key={i} value={u.sender} />
+                      {customers.map((u, i) => (
+                        <option key={i} value={u.customerCompanyName} />
                       ))}
                     </datalist>
                   </Field>
@@ -420,15 +493,6 @@ export default function Order() {
                       name="pickupAddress"
                       placeholder="City / full address"
                       value={form.pickupAddress || ""}
-                    />
-                  </Field>
-                  <Field label="AWB No.">
-                    <input
-                      className="sx-input"
-                      onChange={updateParameter}
-                      name="sawbno"
-                      placeholder="Air Ways Number"
-                      value={form.sawbno || ""}
                     />
                   </Field>
                   <Field label="Pincode">
@@ -458,6 +522,26 @@ export default function Order() {
                       value={form.sstate || ""}
                     />
                   </Field>
+                  <Field label="GST Number">
+                    <input
+                      type="string"
+                      className="sx-input"
+                      onChange={updateParameter}
+                      value={form.gstNumber || ""}
+                      name="gstNumber"
+                      placeholder="GST Number"
+                    />
+                  </Field>
+                  <Field label="PAN Number">
+                    <input
+                      type="string"
+                      className="sx-input"
+                      onChange={updateParameter}
+                      value={form.panNumber || ""}
+                      name="panNumber"
+                      placeholder="PAN Number"
+                    />
+                  </Field>
                 </div>
               </div>
 
@@ -467,23 +551,6 @@ export default function Order() {
                   <div className="sx-section-head">
                     <div className="sx-section-badge blue">↓</div>
                     <span className="sx-section-title">Receiver Details</span>
-                    {selectedRow !== null && (
-                      <span
-                        style={{
-                          marginLeft: "auto",
-                          fontSize: 10,
-                          color: "var(--green)",
-                          background: "rgba(62,207,142,0.1)",
-                          border: "1px solid rgba(62,207,142,0.2)",
-                          borderRadius: 6,
-                          padding: "2px 8px",
-                          fontWeight: 600,
-                          letterSpacing: "0.4px",
-                        }}
-                      >
-                        ✓ Auto-filled
-                      </span>
-                    )}
                   </div>
                 </div>
                 <div className="sx-fields cols-1" style={{ paddingBottom: 20 }}>
@@ -512,15 +579,6 @@ export default function Order() {
                       name="deliveryAddress"
                       placeholder="City / full address"
                       value={form.deliveryAddress || ""}
-                    />
-                  </Field>
-                  <Field label="AWB No.">
-                    <input
-                      className="sx-input"
-                      onChange={updateParameter}
-                      name="rawbno"
-                      placeholder="Air Ways Number"
-                      value={form.rawbno || ""}
                     />
                   </Field>
                   <Field label="Pincode">
@@ -576,6 +634,15 @@ export default function Order() {
                         className="sx-input-date"
                       />
                     </Field>
+                    <Field label="AWB No.">
+                      <input
+                        className="sx-input"
+                        onChange={updateParameter}
+                        name="awbno"
+                        placeholder="Air Ways Number"
+                        value={form.awbno || ""}
+                      />
+                    </Field>
                     <Field label="Network">
                       <input
                         className="sx-input"
@@ -596,13 +663,45 @@ export default function Order() {
                         <option>Non-Document</option>
                       </select>
                     </Field>
-                    <Field label="Weight (kg)">
+                    <Field label="Actual Weight (kg)">
                       <input
                         type="number"
                         className="sx-input"
                         onChange={updateParameter}
-                        value={form.weight || ""}
-                        name="weight"
+                        value={form.actualWeight || ""}
+                        name="actualWeight"
+                        placeholder="0.00"
+                      />
+                    </Field>
+                    <Field label="Volume Weight (kg)">
+                      <label htmlFor="length">Length(in cm)</label>
+                      <input
+                        id="length"
+                        type="number"
+                        className="sx-input"
+                        onChange={updateParameter}
+                        value={form.length || ""}
+                        name="length"
+                        placeholder="0.00"
+                      />
+                      <label htmlFor="breadth">Breadth(in cm)</label>
+                      <input
+                        id="breadth"
+                        type="number"
+                        className="sx-input"
+                        onChange={updateParameter}
+                        value={form.breadth || ""}
+                        name="breadth"
+                        placeholder="0.00"
+                      />
+                      <label htmlFor="height">Height(in cm)</label>
+                      <input
+                        id="height"
+                        type="number"
+                        className="sx-input"
+                        onChange={updateParameter}
+                        value={form.height || ""}
+                        name="height"
                         placeholder="0.00"
                       />
                     </Field>
@@ -633,12 +732,7 @@ export default function Order() {
               </div>
             </div>
             {/* ════════ Past Orders Table ════════ */}
-            <PastOrders
-              orders={orders}
-              selectedRow={selectedRow}
-              setSelectedRow={setSelectedRow}
-              handleRowClick={handleRowClick}
-            />
+            <PastOrders orders={orders} />
           </>
         )}
 
@@ -690,12 +784,8 @@ export default function Order() {
                     </div>
                   </div>
                   <div className="sx-review-cell">
-                    <div className="sx-review-key">Sender AWB</div>
-                    <div className="sx-review-val">{form.sawbno || "—"}</div>
-                  </div>
-                  <div className="sx-review-cell">
-                    <div className="sx-review-key">Receiver AWB</div>
-                    <div className="sx-review-val">{form.rawbno || "—"}</div>
+                    <div className="sx-review-key">AWB Number</div>
+                    <div className="sx-review-val">{form.awbno || "—"}</div>
                   </div>
                   <div className="sx-review-cell">
                     <div className="sx-review-key">Package Type</div>

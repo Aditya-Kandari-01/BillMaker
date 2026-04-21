@@ -1,6 +1,8 @@
 import React from "react";
 
-const PastOrders = ({ orders, selectedRow, setSelectedRow, handleRowClick }) => {
+const PastOrders = ({
+  orders = JSON.parse(localStorage.getItem("consignments")) || [],
+}) => {
   return (
     <div
       className="sx-orders-section"
@@ -53,6 +55,7 @@ const PastOrders = ({ orders, selectedRow, setSelectedRow, handleRowClick }) => 
             <thead>
               <tr>
                 <th>#</th>
+                <th>Sender Name</th>
                 <th>Receiver Name</th>
                 <th>Delivery Address</th>
                 <th>Phone</th>
@@ -66,12 +69,15 @@ const PastOrders = ({ orders, selectedRow, setSelectedRow, handleRowClick }) => 
               {orders.map((item, idx) => (
                 <tr
                   key={idx}
-                  className={selectedRow === idx ? "sx-tr-selected" : ""}
-                  onClick={() => handleRowClick(item, idx)}
-                  title="Click to fill receiver fields"
+                  className="sx-tr-selected"
                 >
                   <td>
                     <span className="sx-row-num">{idx + 1}</span>
+                  </td>
+                  <td>
+                    <span className="sx-name-pill">
+                      {item.sender.name || "—"}
+                    </span>
                   </td>
                   <td>
                     <span className="sx-name-pill">
@@ -91,13 +97,12 @@ const PastOrders = ({ orders, selectedRow, setSelectedRow, handleRowClick }) => 
                     </span>
                   </td>
                   <td>
-                    <span className="sx-awb-badge">
-                      {item.receiver.awb || "—"}
-                    </span>
+                    <span className="sx-awb-badge">{item.awb || "—"}</span>
                   </td>
                   <td>
                     <span className="sx-amount-text">
-                      ₹ {(
+                      ₹{" "}
+                      {(
                         (item.package?.weight || 0) *
                         (item.package?.pricePerKg || 0)
                       ).toLocaleString("en-IN")}
@@ -110,28 +115,7 @@ const PastOrders = ({ orders, selectedRow, setSelectedRow, handleRowClick }) => 
         </div>
       )}
 
-      {selectedRow !== null && (
-        <div className="sx-autofill-toast">
-          <span>✓</span>
-          <span>
-            Receiver details from row {selectedRow + 1} filled into the form
-          </span>
-          <button
-            onClick={() => setSelectedRow(null)}
-            style={{
-              marginLeft: "auto",
-              background: "none",
-              border: "none",
-              color: "var(--green)",
-              cursor: "pointer",
-              fontSize: 16,
-              lineHeight: 1,
-            }}
-          >
-            ×
-          </button>
-        </div>
-      )}
+
     </div>
   );
 };
