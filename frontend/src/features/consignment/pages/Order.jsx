@@ -208,86 +208,103 @@ export default function Order() {
   const [active, setActive] = useState("order");
   const [form, setForm] = useState({ ...initialForm });
   const [date, setDate] = useState(today);
-  const [customers,setCustomers] = useState([])
+  const [customers, setCustomers] = useState([]);
   const [orders, setOrders] = useState(
     () => JSON.parse(localStorage.getItem("consignments")) || [],
   );
+  const fetchCustomers = async () => {
+  try {
+    const res = await fetch("http://localhost:10000/data/customer");
+    const result = await res.json();
 
-const submitHandler = () => {
-  const volumetricWeight =
-    form.length && form.breadth && form.height
-      ? (Number(form.length) * Number(form.breadth) * Number(form.height)) / 5000
-      : 0;
-
-  const consignmentData = {
-    company: {
-      name: "R. S COURIER",
-      address: "M.J Market Kicha Road Near Axis Bank, Sitarganj",
-      city: "Sitarganj",
-      state: "Uttarakhand",
-      pincode: "262405",
-      gstNo: form.gstNumber || "—",
-      panNo: form.panNumber || "—",
-      email: "sanmukhsupplychain@gmail.com",
-      contact: "9810064478",
-    },
-
-    invoice: {
-      number: form.invoiceNo || "1977",
-      date: form.date || new Date().toLocaleDateString("en-GB"),
-      stateCode: form.stateCode || "05",
-      placeOfSupply: form.placeOfSupply || form.rcity || "—",
-      hsnSac: "996812",
-    },
-
-    billTo: {
-      name: form.sender || "—",
-      address: form.pickupAddress || "—",
-      gstNo: form.gstNumber || "—",
-      panNo: form.panNumber || "—",
-    },
-
-    shipTo: {
-      name: form.receiver || "—",
-      address: form.deliveryAddress || "—",
-      placeOfSupply: form.rcity || "—",
-      stateCode: form.stateCode || "—",
-    },
-
-    shipments: [
-      {
-        sno: 1,
-        awb: form.awb || "—",
-        date: form.date || new Date().toLocaleDateString("en-GB"),
-        destination: form.rcity || "—",
-        pcs: form.pcs || 1,
-        weight: form.weight || volumetricWeight || 0,
-        amount: form.price || 0,
-        network: form.network || "—",
-        mode: form.type || "—",
-        origin: form.scity || "—",
-        consignee: form.receiver || "—",
-      },
-    ],
-
-    totals: {
-      totalShipments: 1,
-      totalAwb: 1,
-      subtotal: Number(form.price || 0),
-      grandTotal: Number(form.price || 0),
-    },
-
-    charges: {
-      fuelSurcharge: 0,
-      otherCharges: 0,
-    },
-
-    amountInWords: `INR ${Number(form.price || 0)} ONLY`,
-    fileName: `invoice_${form.awb || "receipt"}.pdf`,
-  };
-
-  generatePdf(consignmentData);
+    if (res.ok) {
+      setCustomers(result.data || []);
+    }
+  } catch (err) {
+    console.log(err);
+  }
 };
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
+  const submitHandler = () => {
+    const volumetricWeight =
+      form.length && form.breadth && form.height
+        ? (Number(form.length) * Number(form.breadth) * Number(form.height)) /
+          5000
+        : 0;
+
+    const consignmentData = {
+      company: {
+        name: "R. S COURIER",
+        address: "M.J Market Kicha Road Near Axis Bank, Sitarganj",
+        city: "Sitarganj",
+        state: "Uttarakhand",
+        pincode: "262405",
+        gstNo: form.gstNumber || "—",
+        panNo: form.panNumber || "—",
+        email: "sanmukhsupplychain@gmail.com",
+        contact: "9810064478",
+      },
+
+      invoice: {
+        number: form.invoiceNo || "1977",
+        date: form.date || new Date().toLocaleDateString("en-GB"),
+        stateCode: form.stateCode || "05",
+        placeOfSupply: form.placeOfSupply || form.rcity || "—",
+        hsnSac: "996812",
+      },
+
+      billTo: {
+        name: form.sender || "—",
+        address: form.pickupAddress || "—",
+        gstNo: form.gstNumber || "—",
+        panNo: form.panNumber || "—",
+      },
+
+      shipTo: {
+        name: form.receiver || "—",
+        address: form.deliveryAddress || "—",
+        placeOfSupply: form.rcity || "—",
+        stateCode: form.stateCode || "—",
+      },
+
+      shipments: [
+        {
+          sno: 1,
+          awb: form.awb || "—",
+          date: form.date || new Date().toLocaleDateString("en-GB"),
+          destination: form.rcity || "—",
+          pcs: form.pcs || 1,
+          weight: form.weight || volumetricWeight || 0,
+          amount: form.price || 0,
+          network: form.network || "—",
+          mode: form.type || "—",
+          origin: form.scity || "—",
+          consignee: form.receiver || "—",
+        },
+      ],
+
+      totals: {
+        totalShipments: 1,
+        totalAwb: 1,
+        subtotal: Number(form.price || 0),
+        grandTotal: Number(form.price || 0),
+      },
+
+      charges: {
+        fuelSurcharge: 0,
+        otherCharges: 0,
+      },
+
+      amountInWords: `INR ${Number(form.price || 0)} ONLY`,
+      fileName: `invoice_${form.awb || "receipt"}.pdf`,
+    };
+
+    generatePdf(consignmentData);
+  };
 
   const addOrder = () => {
     const consignmentData = {
@@ -324,7 +341,6 @@ const submitHandler = () => {
     window.alert("Data added successfully");
   };
 
-
   const updateParameter = async (event) => {
     const { name, value } = event.target;
 
@@ -334,29 +350,32 @@ const submitHandler = () => {
     }
 
     if (name === "sender") {
-      const found = data.find(
-        (u) => u.sender.toLowerCase() === value.toLowerCase(),
-      );
-      setForm((p) => ({
-        ...p,
-        [name]: value,
-        ...(found && {
-          senderPhone: found.senderPhone,
-          pickupAddress: found.pickupAddress,
-          receiver: found.receiver,
-          receiverPhone: found.receiverPhone,
-          deliveryAddress: found.deliveryAddress,
-          scity: found.city,
-          sstate: found.state,
-          spincode: found.pincode,
-          gstNumber: found.gstNumber,
-          panNumber: found.panNumber,
-          network: found.network,
-        }),
-      }));
-      console.log(found)
-      return;
-    }
+  const selected = value.trim();
+
+  const found = customers.find((u) => {
+    const label = `${u.customerName} (${u.customerCode})`;
+    return (
+      label.toLowerCase() === selected.toLowerCase() ||
+      u.customerName?.toLowerCase() === selected.toLowerCase() ||
+      u.customerCode?.toLowerCase() === selected.toLowerCase()
+    );
+  });
+
+  setForm((p) => ({
+    ...p,
+    sender: value,
+    senderPhone: found?.customerPhone || "",
+    pickupAddress: found?.customerAddress || "",
+    scity: found?.customerCity || "",
+    sstate: found?.customerState || "",
+    spincode: found?.customerPincode || "",
+    gstNumber: found?.customerGstNumber || "",
+    panNumber: found?.customerPanNumber || "",
+    network: found?.customerCompanyName || found?.customerName || "",
+  }));
+
+  return;
+}
 
     setForm((p) => ({ ...p, [name]: value }));
 
@@ -398,22 +417,6 @@ const submitHandler = () => {
       }
     }
   };
-  useEffect(() => {
-  const fetchCustomers = async () => {
-    try {
-      const res = await fetch("http://localhost:10000/data/customer");
-      const result = await res.json();
-
-      if (res.ok) {
-        setCustomers(result.data || []);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  fetchCustomers();
-}, []);
 
   const totalAmount =
     form.length && form.breadth && form.height
@@ -473,7 +476,10 @@ const submitHandler = () => {
                     />
                     <datalist id="senderNames">
                       {customers.map((u, i) => (
-                        <option key={i} value={u.customerCompanyName} />
+                        <option
+                          key={i}
+                          value={`${u.customerName} (${u.customerCode})`}
+                        />
                       ))}
                     </datalist>
                   </Field>

@@ -1257,3 +1257,123 @@ body {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* =========================
+   BULK UPLOAD STRIP
+========================= */
+
+.sx-bulk-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  flex-wrap: wrap;
+}
+
+.sx-bulk-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sx-bulk-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sx-bulk-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.sx-bulk-file-input {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--sans);
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.sx-bulk-file-input::file-selector-button {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background 0.15s;
+}
+
+.sx-bulk-file-input::file-selector-button:hover {
+  background: rgba(255, 140, 50, 0.1);
+  border-color: var(--border-hi);
+}
+
+.sx-bulk-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+.sx-bulk-warn {
+  font-size: 12px;
+  font-weight: 500;
+  color: #f0a83a;
+  white-space: nowrap;
+}
+
+.sx-bulk-result {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: rgba(62, 207, 142, 0.06);
+  border: 1px solid rgba(62, 207, 142, 0.18);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  animation: fadeSlideIn 0.25s ease;
+}
+
+.sx-bulk-result-inserted {
+  color: var(--green);
+}
+
+.sx-bulk-result-rejected {
+  color: #f0a83a;
+}
+
+.sx-bulk-result-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.sx-bulk-result-close:hover {
+  color: var(--text);
+  background: var(--surface2);
+}

@@ -6,6 +6,7 @@ const {
   newCustomerDataController,
   checkCustomerController,
   getAllCustomersController,
+  searchCustomerController,bulkCustomerUploadController
 } = require("../controllers/customerController");
 
 /**
@@ -26,5 +27,18 @@ customerRouter.get("/check", checkCustomerController);
  * @description Get all customers (for dropdown / datalist)
  */
 customerRouter.get("/", getAllCustomersController);
+
+/**
+ * @route GET /search
+ * @description Search customers (name/company/code)
+ */
+customerRouter.get("/search", searchCustomerController);
+
+/**
+ * @route POST /bulk
+ * @description To upload multiple customers at once
+ */
+customerRouter.post("/bulk", bulkCustomerUploadController);
+
 
 module.exports = customerRouter;
