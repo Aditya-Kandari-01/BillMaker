@@ -6,11 +6,11 @@ const customerSchema = new mongoose.Schema(
     customerCode: {
       type: String,
       unique: true,
-      index: true,
     },
     // Customer Company Name
     customerCompanyName: {
       type: String,
+      required: true,
       uppercase: true,
       trim: true,
     },
@@ -25,8 +25,7 @@ const customerSchema = new mongoose.Schema(
     // Contact Details
     customerPhone: {
       type: String,
-      required: true,
-      unique: true,
+      trim: true
     },
 
     customerEmail: {
@@ -36,30 +35,40 @@ const customerSchema = new mongoose.Schema(
     },
 
     // Address
-    customerAddress: String,
-    customerCity: String,
-    customerState: String,
+    customerAddress: {
+      type: String,
+      trim: true
+    },
+    customerCity: {
+      type: String,
+      trim: true
+    },
+    customerState: {
+      type: String,
+      trim: true
+    },
     customerCountry: {
       type: String,
-      default: "India",
+      trim: true,
+      default: "India"
     },
-    customerPincode: String,
+    customerPincode: {
+      type: String,
+      trim: true
+    },
 
     // KYC
     customerPanNumber: {
       type: String,
       uppercase: true,
-      trim: true,
-      sparse: true,
-      unique: true,
+      trim: true
     },
 
     customerGstNumber: {
       type: String,
       uppercase: true,
       trim: true,
-      sparse: true,
-      unique: true,
+      unique: true
     },
 
     // Pricing
@@ -83,22 +92,18 @@ const customerSchema = new mongoose.Schema(
 customerSchema.pre("save", async function () {
   if (this.customerCode) return;
 
-  let isUnique = false;
+  const counter = await mongoose
+    .model("CustomerCounter")
+    .findOneAndUpdate(
+      { key: "customerCode" },
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true }
+    );
 
-  while (!isUnique) {
-    const shortTime = Date.now().toString().slice(-5);
-    const random = Math.floor(1000 + Math.random() * 9000);
-    const code = `CUST-${shortTime}-${random}`;
+  const number = counter.seq.toString().padStart(10, "0");
+  this.customerCode = `CUST-${number}`;
+}
 
-    const exists = await mongoose
-      .model("Customer")
-      .findOne({ customerCode: code });
-
-    if (!exists) {
-      this.customerCode = code;
-      isUnique = true;
-    }
-  }
-});
+);
 
 module.exports = mongoose.model("Customer", customerSchema);

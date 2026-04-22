@@ -23,7 +23,7 @@ const NewCustomer = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [bulkData, setBulkData] = useState([]);
-  const [bulkErrors, setBulkErrors] = useState([]);   // rows skipped before upload (missing fields)
+  const [bulkErrors, setBulkErrors] = useState([]); // rows skipped before upload (missing fields)
   const [bulkResult, setBulkResult] = useState(null); // result after upload attempt
   const fileInputRef = useRef(null);
 
@@ -58,7 +58,7 @@ const NewCustomer = () => {
     if (name === "customerCompanyName") {
       const found = customers.find(
         (u) =>
-          (u.customerCompanyName || "").toLowerCase() === value.toLowerCase()
+          (u.customerCompanyName || "").toLowerCase() === value.toLowerCase(),
       );
 
       setForm((prev) => ({
@@ -87,7 +87,7 @@ const NewCustomer = () => {
     if (name === "customerPincode" && value.length === 6) {
       try {
         const res = await fetch(
-          `https://api.postalpincode.in/pincode/${value}`
+          `https://api.postalpincode.in/pincode/${value}`,
         );
         const result = await res.json();
         if (result?.[0]?.Status === "Success") {
@@ -112,7 +112,6 @@ const NewCustomer = () => {
     setBulkResult(null);
 
     const reader = new FileReader();
-
 
     reader.onload = (evt) => {
       const data = new Uint8Array(evt.target.result);
@@ -162,76 +161,60 @@ const NewCustomer = () => {
     reader.readAsArrayBuffer(file);
   };
 
- const handleBulkSubmit = async () => {
-  if (bulkData.length === 0) {
-    alert("No valid data to upload");
-    return;
-  }
-
-  try {
-    const res = await fetch("http://localhost:10000/data/customer/bulk", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(bulkData),
-    });
-
-    const text = await res.text();
-    let result = {};
-
-    try {
-      result = text ? JSON.parse(text) : {};
-    } catch (parseError) {
-      console.log("Non-JSON response from backend:", text);
-      throw new Error("Backend did not return valid JSON");
-    }
-
-    if (!res.ok) {
-      alert(result.message || "Bulk upload failed");
+  const handleBulkSubmit = async () => {
+    if (bulkData.length === 0) {
+      alert("No valid data to upload");
       return;
     }
 
-    setBulkResult(result);
-    setBulkData([]);
-    setBulkErrors([]);
+    try {
+      const res = await fetch("http://localhost:10000/data/customer/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bulkData),
+      });
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+      const text = await res.text();
+      let result = {};
 
-    const refreshRes = await fetch("http://localhost:10000/data/customer");
-    const refreshData = await refreshRes.json();
-    if (refreshRes.ok && Array.isArray(refreshData.data)) {
-      setCustomers(refreshData.data);
+      try {
+        result = text ? JSON.parse(text) : {};
+      } catch (parseError) {
+        console.log("Non-JSON response from backend:", text);
+        throw new Error("Backend did not return valid JSON");
+      }
+
+      if (!res.ok) {
+        alert(result.message || "Bulk upload failed");
+        return;
+      }
+
+      setBulkResult(result);
+      setBulkData([]);
+      setBulkErrors([]);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      const refreshRes = await fetch("http://localhost:10000/data/customer");
+      const refreshData = await refreshRes.json();
+      if (refreshRes.ok && Array.isArray(refreshData.data)) {
+        setCustomers(refreshData.data);
+      }
+    } catch (err) {
+      console.error("Bulk upload error:", err);
+      alert(err.message || "Network error during upload");
     }
-  } catch (err) {
-    console.error("Bulk upload error:", err);
-    alert(err.message || "Network error during upload");
-  }
-};
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const checkRes = await fetch(
-        `http://localhost:10000/data/customer/check?customerCompanyName=${encodeURIComponent(
-          form.customerCompanyName
-        )}&customerGstNumber=${encodeURIComponent(form.customerGstNumber)}`
-      );
-
-      const checkData = await checkRes.json();
-
-      if (checkRes.ok && checkData.exists) {
-        alert("A customer with this company name and GST number already exists.");
-        setForm((prev) => ({ ...prev, ...checkData.data }));
-        setLoading(false);
-        return;
-      }
-
       const payload = {
-        ...form,
-        customerName: form.customerName || form.customerCompanyName,
+        ...form
       };
 
       const res = await fetch("http://localhost:10000/data/customer", {
@@ -243,20 +226,13 @@ const NewCustomer = () => {
       const result = await res.json();
 
       if (!res.ok) {
-        // Shows the specific duplicate field message from the backend
         alert(result.message || "Something went wrong");
         setLoading(false);
         return;
       }
-
       alert("Customer saved successfully");
       setForm({ ...initialForm });
 
-      const refreshRes = await fetch("http://localhost:10000/data/customer");
-      const refreshData = await refreshRes.json();
-      if (refreshRes.ok && Array.isArray(refreshData.data)) {
-        setCustomers(refreshData.data);
-      }
     } catch (error) {
       console.error("Submit error:", error);
       alert("Network error");
@@ -303,7 +279,12 @@ const NewCustomer = () => {
               type="button"
               onClick={handleBulkSubmit}
               className="sx-confirm-btn"
-              style={{ width: "auto", padding: "0 20px", height: 38, fontSize: 13 }}
+              style={{
+                width: "auto",
+                padding: "0 20px",
+                height: 38,
+                fontSize: 13,
+              }}
               disabled={!bulkData.length}
             >
               Upload Excel

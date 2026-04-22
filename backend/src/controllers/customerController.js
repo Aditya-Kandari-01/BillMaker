@@ -1,4 +1,5 @@
 const customerModel = require("../models/customer");
+const {phoneNumber} = require("../utils/phoneNumberUtils")
 
 /**
  * @description upload customer data
@@ -6,43 +7,63 @@ const customerModel = require("../models/customer");
 const newCustomerDataController = async (req, res) => {
   try {
     const data = req.body;
-
-    // Check if BOTH name + GST exist together
-    const existingCustomer = await customerModel.findOne({
-      customerCompanyName: data.customerCompanyName,
-      customerGstNumber: data.customerGstNumber,
-    });
-
-    if (existingCustomer) {
-      return res.status(409).json({
-        success: false,
-        exists: true,
-        message: "Both company name and GST number already exists",
-        data: existingCustomer,
-      });
+  
+    // Phone Number  normalization
+    const phone = req.body.customerPhone
+    
+    const normalizedPhone = phone
+      ? phoneNumber(phone)
+      : undefined;
+    
+    
+    if (phone && !normalizedPhone) {
+      return res.status(400).json({ message: "Invalid phone number" });
     }
 
-    const newCustomer = new customerModel(data);
-    const savedCustomer = await newCustomer.save();
+    //Checking whether the company doesn't have the same gst number
+    if (data.customerGstNumber) {
+      const existingCompany = await customerModel.findOne({
+        customerCompanyName: data.customerCompanyName,
+      });
 
+      if (
+        existingCompany &&
+        existingCompany.customerGstNumber !== data.customerGstNumber
+      ) {
+        return res.status(409).json({
+          success: false,
+          message:
+            "This company is already registered with a different GST number",
+          existingGST: existingCompany.customerGstNumber,
+        });
+      }
+    }
+    // Now adding new data
+    const newCustomer = new customerModel({
+      ...data,
+      customerPhone: normalizedPhone
+    });
+    console.log(newCustomer)
+    await newCustomer.save();
+  
     return res.status(201).json({
       success: true,
       message: "Customer created successfully",
-      data: savedCustomer,
+      data: newCustomer,
     });
-  } catch (error) {
-    // ✅ FIX: Tell the frontend exactly which field is duplicated
-    if (error.code === 11000) {
-      const duplicatedField = Object.keys(error.keyValue || {})[0];
-      const duplicatedValue = error.keyValue?.[duplicatedField];
 
+  }  catch (error) {
+    console.log("FULL ERROR:", error);
+    // Handle duplicate GST error
+    if (error.code === 11000 && error.keyValue?.customerGstNumber) {
       return res.status(409).json({
         success: false,
-        message: `"${duplicatedField}" with value "${duplicatedValue}" already exists. Each customer must have a unique GST number and company name.`,
-        field: duplicatedField,
-        error: error.keyValue,
+        message: "This GST number is already registered with another company",
+        field: "customerGstNumber",
+        value: error.keyValue.customerGstNumber,
       });
     }
+
 
     return res.status(500).json({
       success: false,
@@ -58,6 +79,7 @@ const newCustomerDataController = async (req, res) => {
 const bulkCustomerUploadController = async (req, res) => {
   try {
     const customers = req.body;
+    console.log(customers)
 
     if (!Array.isArray(customers) || customers.length === 0) {
       return res.status(400).json({
@@ -148,6 +170,7 @@ const bulkCustomerUploadController = async (req, res) => {
 const checkCustomerController = async (req, res) => {
   try {
     const { customerCompanyName, customerGstNumber } = req.query;
+
 
     if (!customerCompanyName || !customerGstNumber) {
       return res.status(400).json({
